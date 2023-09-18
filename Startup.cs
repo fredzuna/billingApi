@@ -25,11 +25,22 @@ namespace BasicBilling.API
 
         public IConfiguration Configuration { get; }
 
+        
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Data Source=apidb.db"));
             services.AddControllers();
+
+
+            services.AddCors();
+
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+
+
+);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,6 +54,11 @@ namespace BasicBilling.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(options =>
+             options.WithOrigins("http://localhost:3000")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
 
             app.UseAuthorization();
 

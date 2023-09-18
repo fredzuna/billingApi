@@ -26,6 +26,15 @@ namespace BasicBilling.API.Controllers
             return await context.Clients.ToListAsync();
         }
 
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<Client>> GetById(int id)
+        {
+            return await context.Clients
+                .Include(item => item.Consumptions)
+                .ThenInclude(item => item.Service)
+                .FirstOrDefaultAsync(c => c.Id == id);
+        }
+
         [HttpPost]
         public async Task<ActionResult<List<Client>>> Save()
         {
